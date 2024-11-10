@@ -37,7 +37,7 @@ const CacheArray = {
   },
 
   setKey(key, index, objectKey, value) {
-    return redis.call('JSON.SET', key, `$[${index}].^${objectKey}`, value);
+    return redis.call('JSON.SET', key, `$[${index}].${objectKey}`, value);
   },
 
   set(key, index, value) {
