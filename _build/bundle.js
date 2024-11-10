@@ -4,7 +4,7 @@ const IS_WATCH_MODE = process.env.IS_WATCH_MODE;
 
 const TARGET_ENTRIES = [
   {
-    target: "es2020",
+    target: "node16",
     entryPoints: ["server/index.ts"],
     platform: "node",
     outfile: "./dist/server/server.js",
