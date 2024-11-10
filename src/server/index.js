@@ -1,14 +1,14 @@
 const Redis = require('ioredis');
-const CacheArray = require('./array');
+const { CacheArray } = require('./array');
 
 const redis_host = GetConvar("redis_host", "127.0.0.1");
 
-export function Callback(cb, ...args) {
+function Callback(cb, ...args) {
   if (typeof cb === 'function') return setImmediate(() => cb(...args));
   else return false;
 }
 
-export class Cache extends Redis {
+class Cache extends Redis {
   array
 
   constructor() {
@@ -34,6 +34,11 @@ export class Cache extends Redis {
   }
 
 }
+
+module.exports = {
+  Cache,
+  Callback
+};
 
 exports('GetInterface', () => {
   return new Cache();

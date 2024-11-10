@@ -8,7 +8,7 @@ description 'RedisDB for FiveM'
 version '1.0.0'
 
 server_scripts {
-	'dist/**/*.js',
+	'src/**/*.js',
 }
 
 

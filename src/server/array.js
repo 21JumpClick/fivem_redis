@@ -1,4 +1,4 @@
-export class CacheArray {
+class CacheArray {
 
   redis;
 
@@ -35,3 +35,5 @@ export class CacheArray {
       JSON.stringify(value));
   }
 }
+
+module.exports= { CacheArray };
