@@ -2,6 +2,9 @@
   "name": "fivem-redis",
   "version": "1.0.1",
   "main": "server/index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "ioredis": "^5.4.1"
   },

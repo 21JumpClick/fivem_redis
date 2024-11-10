@@ -3,12 +3,10 @@ import {CacheArray} from "./array";
 
 const redis_host = GetConvar("redis_host", "127.0.0.1");
 
-
 export function Callback(cb, ...args) {
   if (typeof cb === 'function') return setImmediate(() => cb(...args));
   else return false;
 }
-
 
 export class Cache extends Redis {
   array: CacheArray
