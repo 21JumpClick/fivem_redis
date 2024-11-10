@@ -3,7 +3,7 @@ import {CacheArray} from "./array";
 
 const redis_host = GetConvar("redis_host", "127.0.0.1");
 
-export function Callback(cb, ...args) {
+export function Callback(cb:any, ...args:any) {
   if (typeof cb === 'function') return setImmediate(() => cb(...args));
   else return false;
 }
@@ -28,7 +28,7 @@ export class Cache extends Redis {
     return this.set(key, value);
   }
 
-  async read(key: string, cb) {
+  async read(key: string, cb:any) {
     const data = await this.get(key);
     Callback(cb, data);
   }

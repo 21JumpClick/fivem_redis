@@ -1,16 +1,19 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "strict": true,
+    "module": "es2020",
+    "target": "es2021",
+    "lib": ["es2021"],
     "outDir": "dist/server",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": false,
+    "allowUnreachableCode": false,
+    "strictFunctionTypes": true,
+    "moduleResolution": "bundler",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
     "skipLibCheck": true,
-    "module": "CommonJS",
-    "types": ["@citizenfx/server", "@types/node"],
-    "lib": ["ES2020"]
+    "types": ["@types/node", "@citizenfx/server"]
   },
-  "include": ["./**/*"],
-  "exclude": ["**/node_modules", "**/__tests__/*"]
+  "include": ["./**/*"]
 }
