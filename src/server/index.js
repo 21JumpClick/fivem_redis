@@ -29,6 +29,13 @@ const CacheArray = {
     return result;
   },
 
+  async readUuid(key, uuid) {
+    const data = await redis.call('JSON.GET', key, `$[?(@.uuid==${uuid})]`);
+    if (!data) return;
+    const [ result ] = JSON.parse(data);
+    return result;
+  },
+
   async readAll(key) {
     const data = await redis.call('JSON.GET', key, `$`);
     if (!data) return;
@@ -40,8 +47,17 @@ const CacheArray = {
     return redis.call('JSON.SET', key, `$[${index}].${objectKey}`, value);
   },
 
+  setKeyUuid(key, uuid, objectKey, value) {
+    return redis.call('JSON.SET', key, `$[?(@.uuid==${uuid})].${objectKey}`, value);
+  },
+
   set(key, index, value) {
     return redis.call('JSON.SET', key, `$[${index}]`,
+      JSON.stringify(value));
+  },
+
+  setUuid(key, uuid, value) {
+    return redis.call('JSON.SET', key, `$[?(@.uuid==${uuid})]`,
       JSON.stringify(value));
   }
 };
