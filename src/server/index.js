@@ -27,14 +27,18 @@ const CacheArray = {
     return redis.call('JSON.DEL', key, `$[${index}]`);
   },
 
-  async read(key,index,cb) {
+  async read(key, index) {
     const data = await redis.call('JSON.GET', key, `$[${index}]`);
-    Callback(cb, data);
+    if(!data) return;
+    const [result] = JSON.parse(data);
+    return result
   },
 
-  async readAll(key,cb) {
+  async readAll(key) {
     const data = await redis.call('JSON.GET', key, `$`);
-    Callback(cb, data);
+    if(!data) return;
+    const [result] = JSON.parse(data);
+    return result
   },
 
   setKey(key, index, objectKey, value) {
