@@ -1,11 +1,6 @@
 const Redis = require('ioredis');
 const redis_host = GetConvar('redis_host', '127.0.0.1');
 
-function Callback(cb, ...args) {
-  if (typeof cb === 'function') return setImmediate(() => cb(...args));
-  else return false;
-}
-
 const redis = new Redis({
   port: 6379,
   host: redis_host,
@@ -29,16 +24,16 @@ const CacheArray = {
 
   async read(key, index) {
     const data = await redis.call('JSON.GET', key, `$[${index}]`);
-    if(!data) return;
-    const [result] = JSON.parse(data);
-    return result
+    if (!data) return;
+    const [ result ] = JSON.parse(data);
+    return result;
   },
 
   async readAll(key) {
     const data = await redis.call('JSON.GET', key, `$`);
-    if(!data) return;
-    const [result] = JSON.parse(data);
-    return result
+    if (!data) return;
+    const [ result ] = JSON.parse(data);
+    return result;
   },
 
   setKey(key, index, objectKey, value) {
@@ -62,9 +57,8 @@ const Cache = {
     return redis.set(key, value);
   },
 
-  async read(key, cb) {
-    const data = await redis.get(key);
-    Callback(cb, data);
+  async read(key) {
+    return redis.get(key);
   }
 
 };
