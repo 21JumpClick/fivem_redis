@@ -1,15 +1,15 @@
-import Redis from "ioredis";
-import {CacheArray} from "./array";
+const Redis = require('ioredis');
+const CacheArray = require('./array');
 
 const redis_host = GetConvar("redis_host", "127.0.0.1");
 
-export function Callback(cb:any, ...args:any) {
+export function Callback(cb, ...args) {
   if (typeof cb === 'function') return setImmediate(() => cb(...args));
   else return false;
 }
 
 export class Cache extends Redis {
-  array: CacheArray
+  array
 
   constructor() {
     super({
@@ -21,14 +21,14 @@ export class Cache extends Redis {
     this.array = new CacheArray(this)
   }
 
-  add(key: string, value: string | number, expires?: number | string) {
+  add(key, value, expires) {
     if (expires) {
       return this.set(key, value, 'EX', expires);
     }
     return this.set(key, value);
   }
 
-  async read(key: string, cb:any) {
+  async read(key, cb) {
     const data = await this.get(key);
     Callback(cb, data);
   }
