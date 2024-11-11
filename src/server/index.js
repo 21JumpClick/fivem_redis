@@ -38,9 +38,14 @@ const CacheArray = {
     return result; /// {key1:value1,key2:value2,....}
   },
 
-  async readUuid(key, uuid
-  ) {
-    return redis.call('JSON.GET', key, `$[?(@.uuid==${uuid})]`);
+  async readUuid(key, uuid) {
+    const result = await redis.json.get(key, {
+      path: `$[?(@.uuid==${uuid})]`
+    });
+
+    return result[0];
+
+    // return redis.json.get(key, { path: `$[?(@.uuid==${uuid})]` }).then(result => result?.[0] || null);
   },
 
   async readAll(key) {
@@ -52,11 +57,7 @@ const CacheArray = {
   },
 
   setKeyUuid(key, uuid, objectKey, value) {
-    return redis.call(
-      key,
-      `$[?(@.uuid==${uuid})].${objectKey}`,
-      value
-    );
+    return redis.json.set(key, `$[?(@.uuid==${uuid})].${objectKey}`, value);
   },
 
   set(key, index, value) {
