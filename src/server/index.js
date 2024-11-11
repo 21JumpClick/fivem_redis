@@ -93,6 +93,8 @@ const Cache = {
 
 };
 exports('GetInterface', async () => {
-  await redis.connect();
+  if(!redis.isOpen){
+    await redis.connect();
+  }
   return Cache;
 });
