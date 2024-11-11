@@ -70,6 +70,10 @@ const Cache = {
 
   array: CacheArray,
 
+  getPath(...args){
+    return args.join(':')
+  },
+
   add(key, value, expires) {
     if (expires) {
       return redis.set(key, value, 'EX', expires);
