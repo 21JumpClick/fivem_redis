@@ -33,6 +33,17 @@ const CacheArray = {
     return result;
   },
 
+  async mReadAll(...keys) {
+    const data = await redis.call('JSON.MGET', ...keys, `$`);
+    if (!data) return;
+    const results = JSON.parse(data);
+    const result = {};
+    results.forEach(([ item ], index) => {
+      result[keys[index]] = item;
+    });
+    return result; /// {key1:value1,key2:value2,....}
+  },
+
   async readUuid(key, uuid) {
     const data = await redis.call('JSON.GET', key, `$[?(@.uuid==${uuid})]`);
     if (!data) return;
@@ -52,7 +63,8 @@ const CacheArray = {
   },
 
   setKeyUuid(key, uuid, objectKey, value) {
-    return redis.call('JSON.SET', key, `$[?(@.uuid==${uuid})].${objectKey}`, value);
+    return redis.call('JSON.SET', key, `$[?(@.uuid==${uuid})].${objectKey}`,
+      value);
   },
 
   set(key, index, value) {
@@ -70,8 +82,8 @@ const Cache = {
 
   array: CacheArray,
 
-  getPath(...args){
-    return args.join(':')
+  getPath(...args) {
+    return args.join(':');
   },
 
   add(key, value, expires) {
