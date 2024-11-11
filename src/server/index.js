@@ -39,13 +39,7 @@ const CacheArray = {
   },
 
   async readUuid(key, uuid) {
-    const result = await redis.json.get(key, {
-      path: `$[?(@.uuid==${uuid})]`
-    });
-
-    return result[0];
-
-    // return redis.json.get(key, { path: `$[?(@.uuid==${uuid})]` }).then(result => result?.[0] || null);
+    return redis.json.get(key, { path: `$[?(@.uuid==${uuid})]` }).then(result => result?.[0] || null);
   },
 
   async readAll(key) {
