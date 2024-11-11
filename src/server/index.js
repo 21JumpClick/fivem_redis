@@ -22,6 +22,10 @@ const CacheArray = {
     return redis.call('JSON.DEL', key, `$[${index}]`);
   },
 
+  deleteUuid(key, uuid) {
+    return redis.call('JSON.DEL', key, `$[?(@.uuid==${uuid})]`);
+  },
+
   async read(key, index) {
     const data = await redis.call('JSON.GET', key, `$[${index}]`);
     if (!data) return;
@@ -75,6 +79,10 @@ const Cache = {
 
   async read(key) {
     return redis.get(key);
+  },
+
+  async delete(key) {
+    return redis.del(key);
   }
 
 };
