@@ -1,80 +1,70 @@
-const Redis = require('ioredis');
+const { createClient } = require('redis');
 const redis_host = GetConvar('redis_host', '127.0.0.1');
 
-const redis = new Redis({
-  port: 6379,
-  host: redis_host,
-  family: 4,
-  db: 0
+const redis = createClient({
+  url: `redis://${redis_host}:6379`
 });
 
 const CacheArray = {
 
   add(key, value) {
-    return redis.call('JSON.ARRAPPEND', key, '$', JSON.stringify(value));
+    return redis.json.arrAppend(key, '$', value);
   },
 
   new(key) {
-    return redis.call('JSON.SET', key, '$', JSON.stringify([]));
+    return redis.json.set(key, '$', []);
   },
 
   delete(key, index) {
-    return redis.call('JSON.DEL', key, `$[${index}]`);
+    return redis.json.del(key, `$[${index}]`);
   },
 
   deleteUuid(key, uuid) {
-    return redis.call('JSON.DEL', key, `$[?(@.uuid==${uuid})]`);
+    return redis.json.del(key, `$[?(@.uuid==${uuid})]`);
   },
 
   async read(key, index) {
-    const data = await redis.call('JSON.GET', key, `$[${index}]`);
-    if (!data) return;
-    const [ result ] = JSON.parse(data);
-    return result;
+    return redis.json.get(key, `$[${index}]`);
   },
 
   async mReadAll(...keys) {
-    const data = await redis.call('JSON.MGET', ...keys, `$`);
+    const data = await redis.json.MGET(keys, '$') || [];
     if (!data) return;
-    const results = JSON.parse(data);
+    const results = data.flat();
     const result = {};
-    results.forEach(([ item ], index) => {
+    results.forEach((item, index) => {
       result[keys[index]] = item;
     });
     return result; /// {key1:value1,key2:value2,....}
   },
 
-  async readUuid(key, uuid) {
-    const data = await redis.call('JSON.GET', key, `$[?(@.uuid==${uuid})]`);
-    if (!data) return;
-    const [ result ] = JSON.parse(data);
-    return result;
+  async readUuid(key, uuid
+  ) {
+    return redis.call('JSON.GET', key, `$[?(@.uuid==${uuid})]`);
   },
 
   async readAll(key) {
-    const data = await redis.call('JSON.GET', key, `$`);
-    if (!data) return;
-    const [ result ] = JSON.parse(data);
-    return result;
+    return redis.json.get(key, `$`);
   },
 
   setKey(key, index, objectKey, value) {
-    return redis.call('JSON.SET', key, `$[${index}].${objectKey}`, value);
+    return redis.json.set(key, `$[${index}].${objectKey}`, value);
   },
 
   setKeyUuid(key, uuid, objectKey, value) {
-    return redis.call('JSON.SET', key, `$[?(@.uuid==${uuid})].${objectKey}`,
-      value);
+    return redis.call(
+      key,
+      `$[?(@.uuid==${uuid})].${objectKey}`,
+      value
+    );
   },
 
   set(key, index, value) {
-    return redis.call('JSON.SET', key, `$[${index}]`,
-      JSON.stringify(value));
+    return redis.json.set(key, `$[${index}]`, value);
   },
 
   setUuid(key, uuid, value) {
-    return redis.call('JSON.SET', key, `$[?(@.uuid==${uuid})]`,
-      JSON.stringify(value));
+    return redis.json.set(key, `$[?(@.uuid==${uuid})]`, value);
   }
 };
 
@@ -102,6 +92,7 @@ const Cache = {
   }
 
 };
-exports('GetInterface', () => {
+exports('GetInterface', async () => {
+  await redis.connect();
   return Cache;
 });

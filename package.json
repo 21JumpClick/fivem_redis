@@ -3,6 +3,6 @@
   "version": "1.0.1",
   "main": "server/index.js",
   "dependencies": {
-    "ioredis": "^5.4.1"
+    "redis": "^4.7.0"
   }
 }
